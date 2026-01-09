@@ -1,0 +1,31 @@
+module tb_onebitFA;
+
+ logic a, b, cin;
+  logic sum, carry;
+logic expected_sum, expected_carry;
+  integer i;
+  
+  onebitFA uut(.a(a), .b(b), .cin(cin), .sum(sum), .carry(carry));
+  
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars(1);
+	$display("a  b  cin  |  sum  carry  |  exp_sum  exp_carry  | Result");
+    
+    for (i=0; i<8;i=i+1) begin
+      {a,b,cin} = i;
+      #1;
+	
+	expected_sum = a ^ b ^ cin;
+	expected_carry = (a & b) | (b & cin) | (a & cin);
+	
+	if(sum === expected_sum && carry === expected_carry)
+	 $display("%b  %b  %b    |    %b   %b     |    %b         %b       | PASS", 
+		    a, b, cin, sum, carry, expected_sum, expected_carry);
+	else 
+	$display("%b  %b  %b  |  %b  %b  |  %b    %b    | FAIL", 
+		a, b, cin, sum, carry, expected_sum, expected_carry);
+    end
+	$finish;
+  end
+endmodule
